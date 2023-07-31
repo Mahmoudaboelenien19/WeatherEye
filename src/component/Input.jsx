@@ -1,25 +1,31 @@
 import React, { useRef } from "react";
 import { cityCode } from "../redux/slice";
-import { useDispatch } from 'react-redux/es/exports'
+import { useDispatch } from "react-redux/es/exports";
 import { useState } from "react";
 const Input = () => {
-const dispatch= useDispatch()
-const [inp,setinp]=useState("")
-const inpp=useRef()
+  const dispatch = useDispatch();
+  const [inp, setinp] = useState("");
+  const inpp = useRef();
   return (
     <>
-      <form action=""
-      onSubmit={(e)=>{
-        e.preventDefault()
+      <form
+        action=""
+        onSubmit={(e) => {
+          e.preventDefault();
 
-dispatch(cityCode(inp))
-inpp.current.value=""      }}>
-        <input type="text"
-        placeholder="Enter a city ..."
-        ref={inpp} onChange={(e)=>{
-            setinp(e.target.value)
-        }}/>
-        <button>click</button>
+          dispatch(cityCode(inp));
+          inpp.current.value = "";
+        }}
+      >
+        <input
+          type="text"
+          placeholder="Enter a city ..."
+          ref={inpp}
+          onChange={(e) => {
+            setinp(e.target.value);
+          }}
+        />
+        <button>submit</button>
       </form>
     </>
   );

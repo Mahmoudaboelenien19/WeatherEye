@@ -4,12 +4,21 @@ import Input from "./component/Input";
 import Result from "./component/Result";
 import { useSelector } from "react-redux/es/exports";
 import { useEffect } from "react";
+import Grid from "react-spinners/GridLoader";
+import { motion } from "framer-motion";
 import "./App.scss";
+import Loading from "./component/Loading";
 
 const App = () => {
+  const override = {
+    display: "block",
+
+    margin: "0 auto",
+  };
   const err = useRef();
   const [error, setError] = useState(true);
   const [weatherdata, setWeatherData] = useState({});
+  const [isMainLoading, setIsMainLoading] = useState(true);
   const [loading, setLoading] = useState(false);
   const link = `https://api.openweathermap.org/data/2.5/`;
   const key = "58dc397350b4c0c627a975f6654d5241";
@@ -30,7 +39,6 @@ const App = () => {
         err.current.innerHTML = "City Not Found";
         throw Error("can't fetch data");
       }
-      console.log(data);
       if (data.cod == 200) {
         setLoading(false);
 
@@ -60,23 +68,51 @@ const App = () => {
   };
 
   useEffect(() => {
+    setTimeout(() => {
+      setIsMainLoading(false);
+    }, 1200);
+  }, []);
+  useEffect(() => {
     if (value.length == "") return;
     fetched();
   }, [value]);
 
   return (
-    <div className="cont">
-      <Header />
-      <Input />
-      {!error ? (
-        <Result {...weatherdata} />
+    <>
+      {isMainLoading ? (
+        <Loading />
       ) : (
-        <div ref={err} id="err" className={loading == true ? "none" : "block"}>
-          Enter a city
-        </div>
+        <motion.div
+          className="cont"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: [0, 0.2, 0.2, 0.6, 0.8, 1] }}
+        >
+          <Header />
+          <Input />
+          <div id="result">
+            {!error ? (
+              <Result {...weatherdata} />
+            ) : (
+              <div
+                ref={err}
+                id="err"
+                className={loading == true ? "none" : "block"}
+              >
+                Enter a city
+              </div>
+            )}
+            <Grid
+              color={"green"}
+              loading={loading}
+              cssOverride={override}
+              size={5}
+              aria-label="Loading Spinner"
+              data-testid="loader"
+            />
+          </div>
+        </motion.div>
       )}
-      {loading && <div id="loading">Loading</div>}
-    </div>
+    </>
   );
 };
 
